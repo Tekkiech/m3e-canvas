@@ -1,0 +1,2685 @@
+{
+  "title": "Navitune",
+  "brief": "An Android music player for a self-hosted Navidrome server (the Subsonic / OpenSubsonic API) that looks and feels like ArchiveTune: Material 3 Expressive, colors taken from the playing song's artwork, a floating pill navigation bar with the mini player docked on it, and a cinematic full-screen player",
+  "frame": "phone",
+  "platform": "android",
+  "paletteKey": "custom",
+  "customPalette": {
+    "key": "custom",
+    "label": "ArchiveTune coral",
+    "seed": "#ED5564",
+    "primary": "#B2273D",
+    "onPrimary": "#FFFFFF",
+    "primaryContainer": "#FDDADA",
+    "onPrimaryContainer": "#40010A",
+    "inversePrimary": "#FCB4B4",
+    "secondary": "#7F5353",
+    "secondaryContainer": "#FFDAD9",
+    "onSecondaryContainer": "#341012",
+    "tertiaryContainer": "#FFDEAA",
+    "onTertiaryContainer": "#241A03",
+    "surface": "#FFF8F7",
+    "surfaceContainerLow": "#FAF2F1",
+    "surfaceContainer": "#F4ECEC",
+    "surfaceContainerHigh": "#EFE6E6",
+    "surfaceContainerHighest": "#E9E1E0",
+    "onSurface": "#201A1A",
+    "onSurfaceVariant": "#524343",
+    "outline": "#847373",
+    "outlineVariant": "#D5C2C2",
+    "inverseSurface": "#352F2F",
+    "inverseOnSurface": "#F7EFEF",
+    "error": "#B3261E",
+    "onError": "#FFFFFF",
+    "errorContainer": "#F9DEDC",
+    "onErrorContainer": "#410E0B"
+  },
+  "dynamicColor": true,
+  "theme": {
+    "dark": true,
+    "bothModes": true,
+    "contrast": "standard",
+    "shape": "rounded",
+    "font": "roboto",
+    "emphasized": true,
+    "motion": "expressive"
+  },
+  "promptOptions": [
+    "tests",
+    "offline"
+  ],
+  "frames": [
+    {
+      "id": "connect",
+      "name": "Connect",
+      "x": 0,
+      "y": 0,
+      "note": "First launch: sign in to a Navidrome server. The same form adds another server later from Settings. Everything sits in one centered column"
+    },
+    {
+      "id": "home",
+      "name": "Home",
+      "x": 492,
+      "y": 0,
+      "note": "The main feed, one scrolling column (max 1200dp wide, centered on tablets). A tonal backdrop fades from primaryContainer at 30% through secondaryContainer at 14% to transparent over the top 430dp. Pull to refresh uses the M3 Expressive pull-to-refresh with the shape-morphing loading indicator. Sections sit 18dp apart; each header is titleLargeEmphasized with a trailing chevron that opens the full list"
+    },
+    {
+      "id": "homeMore",
+      "name": "Home, scrolled",
+      "x": 984,
+      "y": 0,
+      "note": "Not a separate destination: the rest of the Home feed, reached by scrolling Home down. The floating top bar has slid away, leaving only its status-bar scrim"
+    },
+    {
+      "id": "search",
+      "name": "Search",
+      "x": 1476,
+      "y": 0,
+      "note": "Search the whole server. Typing waits 300ms, then calls search3 (20 artists, 20 albums, 50 songs) and replaces the idle content with a top result followed by Songs, Albums and Artists sections; the chips narrow the results to one type and page further with the offsets. Recent searches are stored locally"
+    },
+    {
+      "id": "library",
+      "name": "Library",
+      "x": 1968,
+      "y": 0,
+      "note": "A horizontal pager of five pages driven by the chip row: Library (shown here), Playlists, Songs, Artists and Albums, which also swipe sideways. The other four pages are lists or two-column grids with a sort dropdown, a list/grid toggle and, on Playlists, a create button; they are fed by getPlaylists, search3 with an empty query, getArtists and getAlbumList2 type=alphabeticalByName. The top bar stays put on this screen"
+    },
+    {
+      "id": "album",
+      "name": "Album",
+      "x": 2460,
+      "y": 0,
+      "note": "Album detail (getAlbum). Playlists and genres reuse this layout. The hero artwork runs full-bleed behind the transparent top bar and the centered title block, fading through a gradient (black 42% at the top, surface 78% at 72% of its height, then solid surface); the hero is at least 560dp tall on phones and the content column is at most 720dp wide"
+    },
+    {
+      "id": "artist",
+      "name": "Artist",
+      "x": 2952,
+      "y": 0,
+      "note": "Artist detail (getArtist, getArtistInfo2), with the same hero treatment as the album. Below the top songs come Albums (a sideways row of 144dp covers, newest first), Appears on, Similar artists (96dp circular avatars from getArtistInfo2) and an About card with the biography that expands on tap"
+    },
+    {
+      "id": "nowPlaying",
+      "name": "Now playing",
+      "x": 3444,
+      "y": 0,
+      "note": "The full player in the Cinematic design. It is a draggable bottom sheet that grows out of the mini player; dragging down, the chevron and back all collapse it. Content uses onBackground (white on the artwork-based backgrounds), and the play tile uses that color as its fill with the surface color for its icon. 32dp side padding",
+      "swipe": {
+        "up": "queue"
+      }
+    },
+    {
+      "id": "queue",
+      "name": "Queue",
+      "x": 3936,
+      "y": 0,
+      "note": "The queue sheet over the player. Tapping a row jumps to it, dragging a row's handle reorders, swiping a row away removes it. The queue is saved to the server (savePlayQueue, debounced and on pause) and restored at launch with getPlayQueue, so another device can pick up where this one stopped"
+    },
+    {
+      "id": "lyrics",
+      "name": "Lyrics",
+      "x": 4428,
+      "y": 0,
+      "note": "Full-screen synced lyrics on the same background as the player. Lines come from getLyricsBySongId (the OpenSubsonic songLyrics extension) when the server offers it, else getLyrics by artist and title, else LRCLIB. The active line is ExtraBold at full strength and the others SemiBold at 42–52% with a slight blur; the list keeps the active line a third of the way down and springs to the next one. Tapping a line seeks there, and word-timed lyrics light up word by word"
+    },
+    {
+      "id": "settings",
+      "name": "Settings",
+      "x": 4920,
+      "y": 0,
+      "note": "Settings home: a server card, then one segmented list of categories that each open their own page"
+    }
+  ],
+  "groups": [
+    {
+      "id": "g1",
+      "x": 158,
+      "y": 96,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i2",
+          "label": "",
+          "icon": null,
+          "variant": "filled",
+          "kind": "image",
+          "size": 96,
+          "note": "is the app mark, drawn inside an M3 Expressive MaterialShapes.Sunny shape filled with primaryContainer"
+        }
+      ]
+    },
+    {
+      "id": "g3",
+      "x": 21,
+      "y": 216,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i4",
+          "label": "Connect to Navidrome",
+          "icon": null,
+          "variant": "filled",
+          "kind": "text",
+          "size": 28,
+          "bold": true
+        }
+      ]
+    },
+    {
+      "id": "g5",
+      "x": 44,
+      "y": 264,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i6",
+          "label": "Stream your own music server, anywhere.",
+          "icon": null,
+          "variant": "filled",
+          "kind": "text",
+          "size": 16
+        }
+      ]
+    },
+    {
+      "id": "g7",
+      "x": 16,
+      "y": 316,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i8",
+          "label": "Server URL",
+          "icon": "dns",
+          "variant": "outlined",
+          "kind": "textField",
+          "supporting": "https://music.example.com or http://100.x.y.z:4533"
+        }
+      ]
+    },
+    {
+      "id": "g9",
+      "x": 16,
+      "y": 404,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i10",
+          "label": "Username",
+          "icon": "person",
+          "variant": "outlined",
+          "kind": "textField"
+        }
+      ]
+    },
+    {
+      "id": "g11",
+      "x": 16,
+      "y": 476,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i12",
+          "label": "Password",
+          "icon": "password",
+          "variant": "outlined",
+          "kind": "textField",
+          "note": "masks what is typed and has a trailing visibility toggle"
+        }
+      ]
+    },
+    {
+      "id": "g13",
+      "x": 24,
+      "y": 564,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i14",
+          "label": "Connect",
+          "icon": "login",
+          "variant": "filled",
+          "kind": "button",
+          "size": 364,
+          "action": {
+            "to": "home",
+            "transition": "fade"
+          },
+          "note": "normalizes the URL (adds https:// when no scheme is typed, strips a trailing slash and /app), calls ping.view with token auth, then getUser and getOpenSubsonicExtensions. On success it stores the server and opens Home; on failure it shows the Subsonic error (wrong credentials, unreachable host, TLS error) under the matching field. The button shows the shape-morphing loading indicator while it waits"
+        }
+      ]
+    },
+    {
+      "id": "g15",
+      "x": 102,
+      "y": 632,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i16",
+          "label": "Advanced options",
+          "icon": "tune",
+          "variant": "text",
+          "kind": "button",
+          "note": "expands a section with custom HTTP headers sent on every request (for Cloudflare Access service tokens: CF-Access-Client-Id / CF-Access-Client-Secret), a 'legacy password auth' switch for servers that reject token auth, and a 'trust this self-signed certificate' switch"
+        }
+      ]
+    },
+    {
+      "id": "g17",
+      "x": 27,
+      "y": 712,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i18",
+          "label": "Works with Navidrome and any OpenSubsonic server.",
+          "icon": null,
+          "variant": "filled",
+          "kind": "text",
+          "size": 14
+        }
+      ]
+    },
+    {
+      "id": "g19",
+      "x": 492,
+      "y": 0,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i20",
+          "label": "Navitune",
+          "icon": null,
+          "variant": "filled",
+          "kind": "topAppBar",
+          "icon2": "settings",
+          "actions": {
+            "icon2": {
+              "to": "settings",
+              "transition": "slide"
+            }
+          },
+          "note": "is shared by Home, Search and Library. It is transparent and floats over the content with a vertical scrim (surface 95% to transparent); it slides away while scrolling down and comes back on the first scroll up. The title is a 35dp app mark followed by the app name in titleLarge Bold. Trailing actions are tonal icon buttons on surfaceContainerHighest at 48% opacity: History (opens recently played) then Settings"
+        }
+      ]
+    },
+    {
+      "id": "g21",
+      "x": 508,
+      "y": 96,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i22",
+          "label": "All",
+          "icon": null,
+          "variant": "filled",
+          "kind": "chip",
+          "checked": true,
+          "note": "starts a row of filter chips on surfaceContainerHigh at 78%, selected on secondaryContainer. They swap the feed below for one album list: All (the mixed feed), Recently added (getAlbumList2 type=newest), Most played (frequent), Random (random)"
+        },
+        {
+          "id": "i23",
+          "label": "Recently added",
+          "icon": null,
+          "variant": "filled",
+          "kind": "chip"
+        },
+        {
+          "id": "i24",
+          "label": "Most played",
+          "icon": null,
+          "variant": "filled",
+          "kind": "chip"
+        },
+        {
+          "id": "i25",
+          "label": "Random",
+          "icon": null,
+          "variant": "filled",
+          "kind": "chip"
+        }
+      ]
+    },
+    {
+      "id": "g26",
+      "x": 508,
+      "y": 144,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i27",
+          "label": "Quick picks",
+          "icon": null,
+          "variant": "filled",
+          "kind": "text",
+          "size": 22,
+          "bold": true
+        }
+      ]
+    },
+    {
+      "id": "g28",
+      "x": 492,
+      "y": 180,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i29",
+          "label": "",
+          "icon": null,
+          "variant": "filled",
+          "kind": "carousel",
+          "layout": "hero",
+          "count": 5,
+          "size2": 300,
+          "tabs": [
+            {
+              "icon": "",
+              "label": "Starlight Drive"
+            },
+            {
+              "icon": "",
+              "label": "Paper Satellites"
+            },
+            {
+              "icon": "",
+              "label": "Glasshouse"
+            },
+            {
+              "icon": "",
+              "label": "Night Bus Home"
+            },
+            {
+              "icon": "",
+              "label": "Salt & Static"
+            }
+          ],
+          "note": "is the Quick picks row: an M3 HorizontalCenteredHeroCarousel of songs (332dp tall on phones, 356dp at 600dp+, 380dp at 840dp+; cards at most 440dp wide, 10dp apart). Each card is the album art full-bleed with 32dp corners, a 1dp outlineVariant border at 72%, and a black gradient (transparent at the top, 8% at the middle, 84% at the bottom) under the title in titleLargeEmphasized white and the artist in bodyLarge white at 78%. The card of the song that is playing shows a 36dp primary circle with a volume_up icon in its top-end corner. Tapping a card plays that song followed by an instant mix (getSimilarSongs2); tapping the playing card toggles pause; long-press opens the song menu. The songs come from the most-played and recently-played albums (getAlbumList2 type=frequent and type=recent), topped up with getRandomSongs"
+        }
+      ]
+    },
+    {
+      "id": "g30",
+      "x": 508,
+      "y": 496,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i31",
+          "label": "Keep listening",
+          "icon": null,
+          "variant": "filled",
+          "kind": "text",
+          "size": 22,
+          "bold": true
+        }
+      ]
+    },
+    {
+      "id": "g32",
+      "x": 492,
+      "y": 532,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i33",
+          "label": "",
+          "icon": null,
+          "variant": "filled",
+          "kind": "carousel",
+          "layout": "uncontained",
+          "count": 6,
+          "size2": 160,
+          "tabs": [
+            {
+              "icon": "",
+              "label": "Northern Lines"
+            },
+            {
+              "icon": "",
+              "label": "Harbor Lights"
+            },
+            {
+              "icon": "",
+              "label": "Soft Machines"
+            },
+            {
+              "icon": "",
+              "label": "Velvet Hours"
+            },
+            {
+              "icon": "",
+              "label": "Low Tide"
+            },
+            {
+              "icon": "",
+              "label": "Signal Fires"
+            }
+          ],
+          "actions": {
+            "tab:0": {
+              "to": "album",
+              "transition": "slide"
+            }
+          },
+          "note": "is the Keep listening shelf: recently played albums (getAlbumList2 type=recent) as a two-row horizontal grid of grid items: 128dp square artwork with 8dp corners, the title below in bodyLarge Bold and the artist in bodyMedium on secondary. Tapping one opens the album"
+        }
+      ]
+    },
+    {
+      "id": "g34",
+      "x": 504,
+      "y": 712,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i35",
+          "label": "Starlight Drive",
+          "icon": "album",
+          "variant": "filled",
+          "kind": "listItem",
+          "supporting": "Aurora Fields",
+          "icon2": "play_arrow",
+          "fill": "surfaceContainerHigh",
+          "size": 388,
+          "action": {
+            "to": "nowPlaying",
+            "transition": "slideUp"
+          },
+          "note": "represents the mini player, not a list row: 70dp tall, 388dp wide (max 420dp), on surfaceContainerHigh. Paired with the navigation bar it has 28dp top corners and 12dp bottom corners and sits 4dp above the bar; alone (on screens without the bar) all corners are 32dp. Leading: 42dp circular artwork with a 1dp outline border at 20%, ringed by a 52dp CircularWavyProgressIndicator showing the playback position (indeterminate while buffering). Middle: title in titleMediumEmphasized and artist in bodySmall, both one line with a marquee. Trailing: previous and next as 48dp standard icon buttons (20dp icons) around play/pause as a 48dp filled primary icon button (24dp icon); disabled buttons fade to 38%. Swipe it sideways to skip tracks, swipe up or tap to open the full player, which grows out of it as a draggable bottom sheet. It sits above the navigation bar on Home, Search and Library, and alone at the bottom of every other screen except the player, queue and lyrics"
+        }
+      ]
+    },
+    {
+      "id": "g36",
+      "x": 504,
+      "y": 788,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i37",
+          "label": "",
+          "icon": null,
+          "variant": "filled",
+          "kind": "bottomNav",
+          "tabs": [
+            {
+              "icon": "home",
+              "label": "Home"
+            },
+            {
+              "icon": "search",
+              "label": "Search"
+            },
+            {
+              "icon": "library_music",
+              "label": "Library"
+            }
+          ],
+          "selected": 0,
+          "size": 388,
+          "radiusTop": 12,
+          "radiusBottom": 28,
+          "actions": {
+            "tab:1": {
+              "to": "search",
+              "transition": "fade"
+            },
+            "tab:2": {
+              "to": "library",
+              "transition": "fade"
+            }
+          },
+          "note": "is a floating pill, not an edge-to-edge bar: the M3 Expressive ShortNavigationBar inside a surfaceContainer Surface 78dp tall, at most 420dp wide, 12dp from the sides and 10dp above the gesture area, with 32dp corners (12dp top corners while the mini player sits on it) and level 2 tonal and shadow elevation. Icons crossfade between outlined and filled when selected. Double-tapping Search focuses the search field"
+        }
+      ]
+    },
+    {
+      "id": "g38",
+      "x": 1000,
+      "y": 32,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i39",
+          "label": "Speed dial",
+          "icon": null,
+          "variant": "filled",
+          "kind": "text",
+          "size": 22,
+          "bold": true
+        }
+      ]
+    },
+    {
+      "id": "g40",
+      "x": 1000,
+      "y": 72,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i41",
+          "label": "",
+          "icon": null,
+          "variant": "filled",
+          "kind": "image",
+          "size": 114,
+          "note": "starts Speed dial: a 3×3 grid of square tiles for pinned albums, artists and playlists (long-press any of them and choose Pin to speed dial), paged sideways with dot indicators when there are more than nine. A tile has 24dp corners, the artwork full-bleed, and its name in labelLargeEmphasized white over an 86dp black gradient at the bottom; the playing tile grows to 32dp corners with a 3dp inverseOnSurface border. Pins are stored locally"
+        }
+      ]
+    },
+    {
+      "id": "g42",
+      "x": 1126,
+      "y": 72,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i43",
+          "label": "",
+          "icon": null,
+          "variant": "filled",
+          "kind": "image",
+          "size": 114
+        }
+      ]
+    },
+    {
+      "id": "g44",
+      "x": 1252,
+      "y": 72,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i45",
+          "label": "",
+          "icon": null,
+          "variant": "filled",
+          "kind": "image",
+          "size": 114
+        }
+      ]
+    },
+    {
+      "id": "g46",
+      "x": 1000,
+      "y": 198,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i47",
+          "label": "",
+          "icon": null,
+          "variant": "filled",
+          "kind": "image",
+          "size": 114
+        }
+      ]
+    },
+    {
+      "id": "g48",
+      "x": 1126,
+      "y": 198,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i49",
+          "label": "",
+          "icon": null,
+          "variant": "filled",
+          "kind": "image",
+          "size": 114
+        }
+      ]
+    },
+    {
+      "id": "g50",
+      "x": 1252,
+      "y": 198,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i51",
+          "label": "",
+          "icon": null,
+          "variant": "filled",
+          "kind": "image",
+          "size": 114
+        }
+      ]
+    },
+    {
+      "id": "g52",
+      "x": 1000,
+      "y": 324,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i53",
+          "label": "",
+          "icon": null,
+          "variant": "filled",
+          "kind": "image",
+          "size": 114
+        }
+      ]
+    },
+    {
+      "id": "g54",
+      "x": 1126,
+      "y": 324,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i55",
+          "label": "",
+          "icon": null,
+          "variant": "filled",
+          "kind": "image",
+          "size": 114
+        }
+      ]
+    },
+    {
+      "id": "g56",
+      "x": 1252,
+      "y": 324,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i57",
+          "label": "",
+          "icon": null,
+          "variant": "filled",
+          "kind": "image",
+          "size": 114,
+          "note": "is the Random tile: a shuffle icon on primaryContainer; it plays getRandomSongs"
+        }
+      ]
+    },
+    {
+      "id": "g58",
+      "x": 1000,
+      "y": 460,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i59",
+          "label": "Forgotten favorites",
+          "icon": null,
+          "variant": "filled",
+          "kind": "text",
+          "size": 22,
+          "bold": true
+        }
+      ]
+    },
+    {
+      "id": "g60",
+      "x": 1000,
+      "y": 496,
+      "axis": "y",
+      "items": [
+        {
+          "id": "i61",
+          "label": "Paper Satellites",
+          "icon": "album",
+          "variant": "filled",
+          "kind": "listItem",
+          "supporting": "The Quiet Coast • Harbor Lights",
+          "iconFill": "none",
+          "icon2": "more_vert",
+          "fill": "surface",
+          "note": "is a song row, the pattern every song list in the app follows: 56dp album art with 10dp corners where the sketch has an icon, the title in bodyLarge SemiBold, 'artist • album' in bodySmall, and a more_vert button that opens the song menu sheet (play next, add to queue, add to playlist, star, download, go to album, go to artist, share, details). Swipe a row right to play it next and left to add it to the queue. The playing row gets a secondaryContainer background with 12dp corners and animated bars over its art. Forgotten favorites lists starred songs (getStarred2) not played for 30 days or more, as a sideways-snapping grid four rows tall"
+        },
+        {
+          "id": "i62",
+          "label": "Glasshouse",
+          "icon": "album",
+          "variant": "filled",
+          "kind": "listItem",
+          "supporting": "Mira Vale • Soft Machines",
+          "iconFill": "none",
+          "icon2": "more_vert",
+          "fill": "surface"
+        }
+      ]
+    },
+    {
+      "id": "g63",
+      "x": 996,
+      "y": 712,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i64",
+          "label": "Starlight Drive",
+          "icon": "album",
+          "variant": "filled",
+          "kind": "listItem",
+          "supporting": "Aurora Fields",
+          "icon2": "play_arrow",
+          "fill": "surfaceContainerHigh",
+          "size": 388,
+          "action": {
+            "to": "nowPlaying",
+            "transition": "slideUp"
+          }
+        }
+      ]
+    },
+    {
+      "id": "g65",
+      "x": 996,
+      "y": 788,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i66",
+          "label": "",
+          "icon": null,
+          "variant": "filled",
+          "kind": "bottomNav",
+          "tabs": [
+            {
+              "icon": "home",
+              "label": "Home"
+            },
+            {
+              "icon": "search",
+              "label": "Search"
+            },
+            {
+              "icon": "library_music",
+              "label": "Library"
+            }
+          ],
+          "selected": 0,
+          "size": 388,
+          "radiusTop": 12,
+          "radiusBottom": 28,
+          "actions": {
+            "tab:1": {
+              "to": "search",
+              "transition": "fade"
+            },
+            "tab:2": {
+              "to": "library",
+              "transition": "fade"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "g67",
+      "x": 1492,
+      "y": 36,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i68",
+          "label": "Search songs, albums, artists",
+          "icon": null,
+          "variant": "filled",
+          "kind": "searchBar"
+        }
+      ]
+    },
+    {
+      "id": "g69",
+      "x": 1492,
+      "y": 104,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i70",
+          "label": "Songs",
+          "icon": null,
+          "variant": "filled",
+          "kind": "chip",
+          "checked": true
+        },
+        {
+          "id": "i71",
+          "label": "Albums",
+          "icon": null,
+          "variant": "filled",
+          "kind": "chip"
+        },
+        {
+          "id": "i72",
+          "label": "Artists",
+          "icon": null,
+          "variant": "filled",
+          "kind": "chip"
+        },
+        {
+          "id": "i73",
+          "label": "Playlists",
+          "icon": null,
+          "variant": "filled",
+          "kind": "chip"
+        }
+      ]
+    },
+    {
+      "id": "g74",
+      "x": 1492,
+      "y": 152,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i75",
+          "label": "Recent searches",
+          "icon": null,
+          "variant": "filled",
+          "kind": "text",
+          "size": 16,
+          "bold": true
+        }
+      ]
+    },
+    {
+      "id": "g76",
+      "x": 1492,
+      "y": 184,
+      "axis": "y",
+      "items": [
+        {
+          "id": "i77",
+          "label": "aurora fields",
+          "icon": "history",
+          "variant": "filled",
+          "kind": "listItem",
+          "iconFill": "none",
+          "icon2": "north_west",
+          "fill": "surface",
+          "note": "runs the search when tapped; its trailing arrow copies the text into the field for editing, and long-press removes it from the history"
+        },
+        {
+          "id": "i78",
+          "label": "night bus",
+          "icon": "history",
+          "variant": "filled",
+          "kind": "listItem",
+          "iconFill": "none",
+          "icon2": "north_west",
+          "fill": "surface"
+        },
+        {
+          "id": "i79",
+          "label": "ambient",
+          "icon": "history",
+          "variant": "filled",
+          "kind": "listItem",
+          "iconFill": "none",
+          "icon2": "north_west",
+          "fill": "surface"
+        }
+      ]
+    },
+    {
+      "id": "g80",
+      "x": 1492,
+      "y": 424,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i81",
+          "label": "Browse genres",
+          "icon": null,
+          "variant": "filled",
+          "kind": "text",
+          "size": 16,
+          "bold": true
+        }
+      ]
+    },
+    {
+      "id": "g82",
+      "x": 1492,
+      "y": 460,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i83",
+          "label": "Electronic",
+          "icon": "graphic_eq",
+          "variant": "filled",
+          "kind": "chip",
+          "note": "starts the genre chips: every genre from getGenres, sorted by song count, wrapping onto as many lines as needed (a FlowRow) instead of scrolling. A genre opens the Album layout listing its albums (getAlbumList2 type=byGenre), where Play shuffles getSongsByGenre"
+        },
+        {
+          "id": "i84",
+          "label": "Indie",
+          "icon": "graphic_eq",
+          "variant": "filled",
+          "kind": "chip"
+        },
+        {
+          "id": "i85",
+          "label": "Jazz",
+          "icon": "graphic_eq",
+          "variant": "filled",
+          "kind": "chip"
+        },
+        {
+          "id": "i86",
+          "label": "Ambient",
+          "icon": "graphic_eq",
+          "variant": "filled",
+          "kind": "chip"
+        },
+        {
+          "id": "i87",
+          "label": "Hip-Hop",
+          "icon": "graphic_eq",
+          "variant": "filled",
+          "kind": "chip"
+        }
+      ]
+    },
+    {
+      "id": "g88",
+      "x": 1488,
+      "y": 712,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i89",
+          "label": "Starlight Drive",
+          "icon": "album",
+          "variant": "filled",
+          "kind": "listItem",
+          "supporting": "Aurora Fields",
+          "icon2": "play_arrow",
+          "fill": "surfaceContainerHigh",
+          "size": 388,
+          "action": {
+            "to": "nowPlaying",
+            "transition": "slideUp"
+          }
+        }
+      ]
+    },
+    {
+      "id": "g90",
+      "x": 1488,
+      "y": 788,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i91",
+          "label": "",
+          "icon": null,
+          "variant": "filled",
+          "kind": "bottomNav",
+          "tabs": [
+            {
+              "icon": "home",
+              "label": "Home"
+            },
+            {
+              "icon": "search",
+              "label": "Search"
+            },
+            {
+              "icon": "library_music",
+              "label": "Library"
+            }
+          ],
+          "selected": 1,
+          "size": 388,
+          "radiusTop": 12,
+          "radiusBottom": 28,
+          "actions": {
+            "tab:0": {
+              "to": "home",
+              "transition": "fade"
+            },
+            "tab:2": {
+              "to": "library",
+              "transition": "fade"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "g92",
+      "x": 1968,
+      "y": 0,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i93",
+          "label": "Navitune",
+          "icon": null,
+          "variant": "filled",
+          "kind": "topAppBar",
+          "icon2": "settings",
+          "actions": {
+            "icon2": {
+              "to": "settings",
+              "transition": "slide"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "g94",
+      "x": 1984,
+      "y": 96,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i95",
+          "label": "Library",
+          "icon": null,
+          "variant": "filled",
+          "kind": "chip",
+          "checked": true,
+          "note": "starts a row of expressive tab chips, not filter chips: full pills with 18dp by 10dp padding and a 20dp icon before the label; the selected one fills with primary and onPrimary content, the others sit on surfaceVariant at 50% with onSurfaceVariant content; selection animates color and scale"
+        },
+        {
+          "id": "i96",
+          "label": "Playlists",
+          "icon": "queue_music",
+          "variant": "filled",
+          "kind": "chip"
+        },
+        {
+          "id": "i97",
+          "label": "Songs",
+          "icon": "music_note",
+          "variant": "filled",
+          "kind": "chip"
+        },
+        {
+          "id": "i98",
+          "label": "Artists",
+          "icon": "person",
+          "variant": "filled",
+          "kind": "chip"
+        },
+        {
+          "id": "i99",
+          "label": "Albums",
+          "icon": "album",
+          "variant": "filled",
+          "kind": "chip"
+        }
+      ]
+    },
+    {
+      "id": "g100",
+      "x": 1984,
+      "y": 144,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i101",
+          "label": "Starred",
+          "icon": "favorite",
+          "variant": "filled",
+          "kind": "card",
+          "supporting": "248 songs",
+          "noImage": true,
+          "size": 180,
+          "size2": 84,
+          "note": "is the first of four shortcut cards in two equal columns: 26dp corners, surfaceContainer blended 6–8% with the card's accent (Starred error, Downloaded primary, Most played secondary, Recently added tertiary), a 32dp circular icon bubble at 10–16% of the accent with the 16dp icon in the accent, the title in titleSmall Bold and the count in bodySmall. Starred opens getStarred2 songs"
+        }
+      ]
+    },
+    {
+      "id": "g102",
+      "x": 2172,
+      "y": 144,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i103",
+          "label": "Downloaded",
+          "icon": "download_done",
+          "variant": "filled",
+          "kind": "card",
+          "supporting": "Available offline",
+          "noImage": true,
+          "size": 180,
+          "size2": 84,
+          "note": "opens the albums and playlists saved for offline listening"
+        }
+      ]
+    },
+    {
+      "id": "g104",
+      "x": 1984,
+      "y": 236,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i105",
+          "label": "Most played",
+          "icon": "trending_up",
+          "variant": "filled",
+          "kind": "card",
+          "supporting": "All time",
+          "noImage": true,
+          "size": 180,
+          "size2": 84,
+          "note": "opens getAlbumList2 type=frequent"
+        }
+      ]
+    },
+    {
+      "id": "g106",
+      "x": 2172,
+      "y": 236,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i107",
+          "label": "Recently added",
+          "icon": "fiber_new",
+          "variant": "filled",
+          "kind": "card",
+          "supporting": "Newest albums",
+          "noImage": true,
+          "size": 180,
+          "size2": 84,
+          "note": "opens getAlbumList2 type=newest"
+        }
+      ]
+    },
+    {
+      "id": "g108",
+      "x": 1984,
+      "y": 340,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i109",
+          "label": "Recently played",
+          "icon": null,
+          "variant": "filled",
+          "kind": "text",
+          "size": 22,
+          "bold": true
+        }
+      ]
+    },
+    {
+      "id": "g110",
+      "x": 1968,
+      "y": 376,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i111",
+          "label": "",
+          "icon": null,
+          "variant": "filled",
+          "kind": "carousel",
+          "layout": "uncontained",
+          "count": 6,
+          "size2": 130,
+          "tabs": [
+            {
+              "icon": "",
+              "label": "Northern Lines"
+            },
+            {
+              "icon": "",
+              "label": "Harbor Lights"
+            },
+            {
+              "icon": "",
+              "label": "Soft Machines"
+            },
+            {
+              "icon": "",
+              "label": "Velvet Hours"
+            },
+            {
+              "icon": "",
+              "label": "Low Tide"
+            },
+            {
+              "icon": "",
+              "label": "Signal Fires"
+            }
+          ],
+          "actions": {
+            "tab:0": {
+              "to": "album",
+              "transition": "slide"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "g112",
+      "x": 1984,
+      "y": 520,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i113",
+          "label": "Your playlists",
+          "icon": null,
+          "variant": "filled",
+          "kind": "text",
+          "size": 22,
+          "bold": true
+        }
+      ]
+    },
+    {
+      "id": "g114",
+      "x": 1984,
+      "y": 556,
+      "axis": "y",
+      "items": [
+        {
+          "id": "i115",
+          "label": "Late night drive",
+          "icon": "queue_music",
+          "variant": "filled",
+          "kind": "listItem",
+          "supporting": "32 songs • 2 h 4 min",
+          "icon2": "more_vert",
+          "fill": "surface",
+          "action": {
+            "to": "album",
+            "transition": "slide"
+          },
+          "note": "shows the playlist in the Album layout (getPlaylist, with a 2×2 collage of its first covers as the hero), with drag-to-reorder and swipe-to-remove when you own it (updatePlaylist)"
+        },
+        {
+          "id": "i116",
+          "label": "Sunday morning",
+          "icon": "queue_music",
+          "variant": "filled",
+          "kind": "listItem",
+          "supporting": "18 songs • 1 h 11 min",
+          "icon2": "more_vert",
+          "fill": "surface"
+        }
+      ]
+    },
+    {
+      "id": "g117",
+      "x": 1980,
+      "y": 712,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i118",
+          "label": "Starlight Drive",
+          "icon": "album",
+          "variant": "filled",
+          "kind": "listItem",
+          "supporting": "Aurora Fields",
+          "icon2": "play_arrow",
+          "fill": "surfaceContainerHigh",
+          "size": 388,
+          "action": {
+            "to": "nowPlaying",
+            "transition": "slideUp"
+          }
+        }
+      ]
+    },
+    {
+      "id": "g119",
+      "x": 1980,
+      "y": 788,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i120",
+          "label": "",
+          "icon": null,
+          "variant": "filled",
+          "kind": "bottomNav",
+          "tabs": [
+            {
+              "icon": "home",
+              "label": "Home"
+            },
+            {
+              "icon": "search",
+              "label": "Search"
+            },
+            {
+              "icon": "library_music",
+              "label": "Library"
+            }
+          ],
+          "selected": 2,
+          "size": 388,
+          "radiusTop": 12,
+          "radiusBottom": 28,
+          "actions": {
+            "tab:0": {
+              "to": "home",
+              "transition": "fade"
+            },
+            "tab:1": {
+              "to": "search",
+              "transition": "fade"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "g121",
+      "x": 2460,
+      "y": 0,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i122",
+          "label": "",
+          "icon": null,
+          "variant": "filled",
+          "kind": "image",
+          "size": 412,
+          "note": "is the hero artwork (getCoverArt at 1200px) with no corners, center-cropped"
+        }
+      ]
+    },
+    {
+      "id": "g123",
+      "x": 2460,
+      "y": 0,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i124",
+          "label": "Northern Lines",
+          "icon": "arrow_back",
+          "variant": "filled",
+          "kind": "topAppBar",
+          "icon2": "more_vert",
+          "actions": {
+            "icon": {
+              "to": "back",
+              "transition": "slide"
+            }
+          },
+          "note": "stays transparent over the artwork and shows its title only after the hero has scrolled away, when it also takes the surface color. More opens the album menu: play next, add to queue, add to playlist, download, go to artist, share (createShare), details"
+        }
+      ]
+    },
+    {
+      "id": "g125",
+      "x": 2536,
+      "y": 296,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i126",
+          "label": "Northern Lines",
+          "icon": null,
+          "variant": "filled",
+          "kind": "text",
+          "size": 32,
+          "bold": true,
+          "note": "is the title in headlineLarge; the artist line below is titleMedium at 82%, the details line bodyMedium at 76%"
+        }
+      ]
+    },
+    {
+      "id": "g127",
+      "x": 2612,
+      "y": 344,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i128",
+          "label": "Aurora Fields",
+          "icon": null,
+          "variant": "filled",
+          "kind": "text",
+          "size": 16,
+          "action": {
+            "to": "artist",
+            "transition": "slide"
+          }
+        }
+      ]
+    },
+    {
+      "id": "g129",
+      "x": 2550,
+      "y": 372,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i130",
+          "label": "Album • 2023 • 11 songs • 46 min",
+          "icon": null,
+          "variant": "filled",
+          "kind": "text",
+          "size": 14
+        }
+      ]
+    },
+    {
+      "id": "g131",
+      "x": 2485,
+      "y": 426,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i132",
+          "label": "",
+          "icon": "download",
+          "variant": "tonal",
+          "kind": "iconButton",
+          "size": 52,
+          "note": "downloads every track for offline play, turning into a circular progress ring while it runs and a check when done. The four round action buttons are 52dp FilledTonalIconButtons on the content color at 16%, balanced two on each side of Play"
+        }
+      ]
+    },
+    {
+      "id": "g133",
+      "x": 2549,
+      "y": 426,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i134",
+          "label": "",
+          "icon": "shuffle",
+          "variant": "tonal",
+          "kind": "iconButton",
+          "size": 52,
+          "note": "shuffles the album"
+        }
+      ]
+    },
+    {
+      "id": "g135",
+      "x": 2613,
+      "y": 424,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i136",
+          "label": "Play",
+          "icon": "play_arrow",
+          "variant": "filled",
+          "kind": "button",
+          "size": 104,
+          "note": "is a medium (56dp) pill that plays from the first track"
+        }
+      ]
+    },
+    {
+      "id": "g137",
+      "x": 2729,
+      "y": 426,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i138",
+          "label": "",
+          "icon": "favorite",
+          "variant": "tonal",
+          "kind": "iconButton",
+          "size": 52,
+          "toggle": {
+            "variant": "filled"
+          },
+          "note": "stars the album on the server (star / unstar with albumId); while starred it turns error at 16%"
+        }
+      ]
+    },
+    {
+      "id": "g139",
+      "x": 2793,
+      "y": 426,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i140",
+          "label": "",
+          "icon": "playlist_add",
+          "variant": "tonal",
+          "kind": "iconButton",
+          "size": 52,
+          "note": "adds the whole album to a playlist"
+        }
+      ]
+    },
+    {
+      "id": "g141",
+      "x": 2476,
+      "y": 496,
+      "axis": "y",
+      "items": [
+        {
+          "id": "i142",
+          "label": "Starlight Drive",
+          "icon": "counter_1",
+          "variant": "filled",
+          "kind": "listItem",
+          "supporting": "Aurora Fields • 3:48",
+          "iconFill": "none",
+          "icon2": "more_vert",
+          "fill": "surface",
+          "note": "is a track row: the track number replaces the album art, and a 'Disc 2' header separates discs on multi-disc albums"
+        },
+        {
+          "id": "i143",
+          "label": "Paper Lanterns",
+          "icon": "counter_2",
+          "variant": "filled",
+          "kind": "listItem",
+          "supporting": "Aurora Fields • 4:12",
+          "iconFill": "none",
+          "icon2": "more_vert",
+          "fill": "surface"
+        },
+        {
+          "id": "i144",
+          "label": "Coastline",
+          "icon": "counter_3",
+          "variant": "filled",
+          "kind": "listItem",
+          "supporting": "Aurora Fields • 3:05",
+          "iconFill": "none",
+          "icon2": "more_vert",
+          "fill": "surface"
+        }
+      ]
+    },
+    {
+      "id": "g145",
+      "x": 2472,
+      "y": 786,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i146",
+          "label": "Starlight Drive",
+          "icon": "album",
+          "variant": "filled",
+          "kind": "listItem",
+          "supporting": "Aurora Fields",
+          "icon2": "play_arrow",
+          "fill": "surfaceContainerHigh",
+          "size": 388,
+          "action": {
+            "to": "nowPlaying",
+            "transition": "slideUp"
+          }
+        }
+      ]
+    },
+    {
+      "id": "g147",
+      "x": 2952,
+      "y": 0,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i148",
+          "label": "",
+          "icon": null,
+          "variant": "filled",
+          "kind": "image",
+          "size": 412,
+          "note": "is the artist image from getArtistInfo2 (largeImageUrl), falling back to the newest album's cover"
+        }
+      ]
+    },
+    {
+      "id": "g149",
+      "x": 2952,
+      "y": 0,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i150",
+          "label": "Aurora Fields",
+          "icon": "arrow_back",
+          "variant": "filled",
+          "kind": "topAppBar",
+          "icon2": "more_vert",
+          "actions": {
+            "icon": {
+              "to": "back",
+              "transition": "slide"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "g151",
+      "x": 3004,
+      "y": 290,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i152",
+          "label": "Aurora Fields",
+          "icon": null,
+          "variant": "filled",
+          "kind": "text",
+          "size": 36,
+          "bold": true
+        }
+      ]
+    },
+    {
+      "id": "g153",
+      "x": 3089,
+      "y": 342,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i154",
+          "label": "8 albums • 96 songs",
+          "icon": null,
+          "variant": "filled",
+          "kind": "text",
+          "size": 14
+        }
+      ]
+    },
+    {
+      "id": "g155",
+      "x": 3010,
+      "y": 382,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i156",
+          "label": "",
+          "icon": "radio",
+          "variant": "tonal",
+          "kind": "iconButton",
+          "size": 52,
+          "note": "starts an artist radio: getSimilarSongs2 with the artist id"
+        }
+      ]
+    },
+    {
+      "id": "g157",
+      "x": 3074,
+      "y": 382,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i158",
+          "label": "",
+          "icon": "shuffle",
+          "variant": "tonal",
+          "kind": "iconButton",
+          "size": 52
+        }
+      ]
+    },
+    {
+      "id": "g159",
+      "x": 3138,
+      "y": 380,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i160",
+          "label": "Play",
+          "icon": "play_arrow",
+          "variant": "filled",
+          "kind": "button",
+          "size": 104
+        }
+      ]
+    },
+    {
+      "id": "g161",
+      "x": 3254,
+      "y": 382,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i162",
+          "label": "",
+          "icon": "favorite",
+          "variant": "tonal",
+          "kind": "iconButton",
+          "size": 52,
+          "toggle": {
+            "variant": "filled"
+          },
+          "note": "stars the artist"
+        }
+      ]
+    },
+    {
+      "id": "g163",
+      "x": 2968,
+      "y": 456,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i164",
+          "label": "Top songs",
+          "icon": null,
+          "variant": "filled",
+          "kind": "text",
+          "size": 22,
+          "bold": true
+        }
+      ]
+    },
+    {
+      "id": "g165",
+      "x": 2968,
+      "y": 492,
+      "axis": "y",
+      "items": [
+        {
+          "id": "i166",
+          "label": "Starlight Drive",
+          "icon": "album",
+          "variant": "filled",
+          "kind": "listItem",
+          "supporting": "Northern Lines",
+          "iconFill": "none",
+          "icon2": "more_vert",
+          "fill": "surface",
+          "note": "lists getTopSongs for the artist, falling back to the artist's songs sorted by play count when the server has no Last.fm data"
+        },
+        {
+          "id": "i167",
+          "label": "Coastline",
+          "icon": "album",
+          "variant": "filled",
+          "kind": "listItem",
+          "supporting": "Northern Lines",
+          "iconFill": "none",
+          "icon2": "more_vert",
+          "fill": "surface"
+        },
+        {
+          "id": "i168",
+          "label": "Night Ferry",
+          "icon": "album",
+          "variant": "filled",
+          "kind": "listItem",
+          "supporting": "Harbor Lights",
+          "iconFill": "none",
+          "icon2": "more_vert",
+          "fill": "surface"
+        }
+      ]
+    },
+    {
+      "id": "g169",
+      "x": 2964,
+      "y": 786,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i170",
+          "label": "Starlight Drive",
+          "icon": "album",
+          "variant": "filled",
+          "kind": "listItem",
+          "supporting": "Aurora Fields",
+          "icon2": "play_arrow",
+          "fill": "surfaceContainerHigh",
+          "size": 388,
+          "action": {
+            "to": "nowPlaying",
+            "transition": "slideUp"
+          }
+        }
+      ]
+    },
+    {
+      "id": "g171",
+      "x": 3460,
+      "y": 36,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i172",
+          "label": "",
+          "icon": "keyboard_arrow_down",
+          "variant": "text",
+          "kind": "iconButton",
+          "size": 48,
+          "action": {
+            "to": "back",
+            "transition": "slideDown"
+          }
+        }
+      ]
+    },
+    {
+      "id": "g173",
+      "x": 3560,
+      "y": 48,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i174",
+          "label": "Playing from Northern Lines",
+          "icon": null,
+          "variant": "filled",
+          "kind": "text",
+          "size": 14
+        }
+      ]
+    },
+    {
+      "id": "g175",
+      "x": 3476,
+      "y": 104,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i176",
+          "label": "",
+          "icon": null,
+          "variant": "filled",
+          "kind": "image",
+          "size": 348,
+          "note": "is the artwork with 16dp corners (adjustable in Appearance). Swipe it sideways to skip; double-tap its left or right half to seek 10s"
+        }
+      ]
+    },
+    {
+      "id": "g177",
+      "x": 3476,
+      "y": 474,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i178",
+          "label": "Starlight Drive",
+          "icon": null,
+          "variant": "filled",
+          "kind": "text",
+          "size": 22,
+          "bold": true,
+          "note": "is the title in titleLarge Bold on one line with a marquee; the artist line under it and the title form one column that fills the row, with the three action tiles at its end. Tapping the title opens the album; long-press copies it"
+        }
+      ]
+    },
+    {
+      "id": "g179",
+      "x": 3476,
+      "y": 506,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i180",
+          "label": "Aurora Fields",
+          "icon": null,
+          "variant": "filled",
+          "kind": "text",
+          "size": 16,
+          "action": {
+            "to": "artist",
+            "transition": "slide"
+          }
+        }
+      ]
+    },
+    {
+      "id": "g181",
+      "x": 3676,
+      "y": 478,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i182",
+          "label": "",
+          "icon": "share",
+          "variant": "tonal",
+          "kind": "iconButton",
+          "size": 44,
+          "note": "is the first of three 44dp rounded-square tiles (14dp corners) on the content color at 12%. It shares a Navidrome share link (createShare), or the text 'Title – Artist' when sharing is off on the server"
+        }
+      ]
+    },
+    {
+      "id": "g183",
+      "x": 3728,
+      "y": 478,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i184",
+          "label": "",
+          "icon": "favorite",
+          "variant": "tonal",
+          "kind": "iconButton",
+          "size": 44,
+          "toggle": {
+            "variant": "filled"
+          },
+          "note": "stars the song; while starred the tile turns error at 25% with an error-colored heart"
+        }
+      ]
+    },
+    {
+      "id": "g185",
+      "x": 3780,
+      "y": 478,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i186",
+          "label": "",
+          "icon": "more_horiz",
+          "variant": "tonal",
+          "kind": "iconButton",
+          "size": 44,
+          "note": "opens the player menu: add to playlist, go to album, go to artist, playback speed and pitch, equalizer, details (codec, bitrate, sample rate, file path)"
+        }
+      ]
+    },
+    {
+      "id": "g187",
+      "x": 3476,
+      "y": 548,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i188",
+          "label": "",
+          "icon": null,
+          "variant": "filled",
+          "kind": "slider",
+          "size": 348,
+          "value": 36,
+          "note": "is the seek bar in the content color, with the elapsed and total time under its ends in labelMedium. Its look is a setting: Standard, Wavy (squiggles while playing), Thick, Circular or Simple"
+        }
+      ]
+    },
+    {
+      "id": "g189",
+      "x": 3476,
+      "y": 594,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i190",
+          "label": "1:24",
+          "icon": null,
+          "variant": "filled",
+          "kind": "text",
+          "size": 12
+        }
+      ]
+    },
+    {
+      "id": "g191",
+      "x": 3794,
+      "y": 594,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i192",
+          "label": "3:48",
+          "icon": null,
+          "variant": "filled",
+          "kind": "text",
+          "size": 12
+        }
+      ]
+    },
+    {
+      "id": "g193",
+      "x": 3474,
+      "y": 656,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i194",
+          "label": "",
+          "icon": "shuffle",
+          "variant": "tonal",
+          "kind": "iconButton",
+          "size": 40,
+          "note": "is drawn, like repeat, as a 46dp rounded square (16dp corners) on the content color at 8%, rising to 20% with a full-strength icon when on; repeat cycles off, all and one"
+        }
+      ]
+    },
+    {
+      "id": "g195",
+      "x": 3526,
+      "y": 648,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i196",
+          "label": "",
+          "icon": "skip_previous",
+          "variant": "tonal",
+          "kind": "iconButton",
+          "size": 56,
+          "note": "is drawn, like next, as a 56dp rounded square (18dp corners) on the content color at 15% with a 28dp icon"
+        }
+      ]
+    },
+    {
+      "id": "g197",
+      "x": 3602,
+      "y": 628,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i198",
+          "label": "",
+          "icon": "pause",
+          "variant": "filled",
+          "kind": "iconButton",
+          "size": 96,
+          "note": "is an 88dp play/pause tile whose corners spring between 44dp (a circle, while paused) and 28dp (a squircle, while playing) with a medium-bouncy spring, holding a 44dp icon, or a 40dp CircularWavyProgressIndicator while buffering. The side controls scale down together on narrow screens"
+        }
+      ]
+    },
+    {
+      "id": "g199",
+      "x": 3718,
+      "y": 648,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i200",
+          "label": "",
+          "icon": "skip_next",
+          "variant": "tonal",
+          "kind": "iconButton",
+          "size": 56
+        }
+      ]
+    },
+    {
+      "id": "g201",
+      "x": 3786,
+      "y": 656,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i202",
+          "label": "",
+          "icon": "repeat",
+          "variant": "tonal",
+          "kind": "iconButton",
+          "size": 40
+        }
+      ]
+    },
+    {
+      "id": "g203",
+      "x": 3550,
+      "y": 744,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i204",
+          "label": "FLAC • 24-bit • 96 kHz • 2,304 kbps",
+          "icon": null,
+          "variant": "filled",
+          "kind": "text",
+          "size": 12,
+          "note": "is the codec line built from the song's suffix, bitDepth, samplingRate and bitRate; it reads 'Transcoded to OPUS • 192 kbps' when the stream is transcoded"
+        }
+      ]
+    },
+    {
+      "id": "g205",
+      "x": 3476,
+      "y": 776,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i206",
+          "label": "Queue",
+          "icon": "queue_music",
+          "variant": "tonal",
+          "kind": "button",
+          "size": 140,
+          "note": "is, like Lyrics, a 16dp-cornered tile on the content color at 10% rather than a pill",
+          "action": {
+            "to": "queue",
+            "transition": "slideUp"
+          }
+        }
+      ]
+    },
+    {
+      "id": "g207",
+      "x": 3626,
+      "y": 780,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i208",
+          "label": "",
+          "icon": "bedtime",
+          "variant": "tonal",
+          "kind": "iconButton",
+          "size": 48,
+          "note": "sets the sleep timer (minutes, or end of the current song); while it runs the button shows the time left and a tap cancels it"
+        }
+      ]
+    },
+    {
+      "id": "g209",
+      "x": 3684,
+      "y": 776,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i210",
+          "label": "Lyrics",
+          "icon": "lyrics",
+          "variant": "tonal",
+          "kind": "button",
+          "size": 140,
+          "action": {
+            "to": "lyrics",
+            "transition": "fade"
+          }
+        }
+      ]
+    },
+    {
+      "id": "g211",
+      "x": 3936,
+      "y": 40,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i212",
+          "label": "",
+          "icon": null,
+          "variant": "filled",
+          "kind": "bottomSheet",
+          "size2": 852,
+          "fill": "surfaceContainerLow"
+        }
+      ]
+    },
+    {
+      "id": "g213",
+      "x": 3960,
+      "y": 76,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i214",
+          "label": "Up next",
+          "icon": null,
+          "variant": "filled",
+          "kind": "text",
+          "size": 22,
+          "bold": true
+        }
+      ]
+    },
+    {
+      "id": "g215",
+      "x": 3960,
+      "y": 108,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i216",
+          "label": "Northern Lines • 11 songs",
+          "icon": null,
+          "variant": "filled",
+          "kind": "text",
+          "size": 14
+        }
+      ]
+    },
+    {
+      "id": "g217",
+      "x": 3952,
+      "y": 148,
+      "axis": "y",
+      "items": [
+        {
+          "id": "i218",
+          "label": "Starlight Drive",
+          "icon": "equalizer",
+          "variant": "filled",
+          "kind": "listItem",
+          "supporting": "Aurora Fields • 3:48",
+          "iconFill": "none",
+          "fill": "secondaryContainer",
+          "icon2": "drag_handle",
+          "note": "is the current song, on secondaryContainer with 12dp corners and animated bars over its art"
+        },
+        {
+          "id": "i219",
+          "label": "Paper Lanterns",
+          "icon": "album",
+          "variant": "filled",
+          "kind": "listItem",
+          "supporting": "Aurora Fields • 4:12",
+          "iconFill": "none",
+          "icon2": "drag_handle"
+        },
+        {
+          "id": "i220",
+          "label": "Coastline",
+          "icon": "album",
+          "variant": "filled",
+          "kind": "listItem",
+          "supporting": "Aurora Fields • 3:05",
+          "iconFill": "none",
+          "icon2": "drag_handle"
+        },
+        {
+          "id": "i221",
+          "label": "Harbor Wind",
+          "icon": "album",
+          "variant": "filled",
+          "kind": "listItem",
+          "supporting": "The Quiet Coast • 5:01",
+          "iconFill": "none",
+          "icon2": "drag_handle"
+        },
+        {
+          "id": "i222",
+          "label": "Night Ferry",
+          "icon": "album",
+          "variant": "filled",
+          "kind": "listItem",
+          "supporting": "The Quiet Coast • 3:37",
+          "iconFill": "none",
+          "icon2": "drag_handle"
+        }
+      ]
+    },
+    {
+      "id": "g223",
+      "x": 4032,
+      "y": 788,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i224",
+          "label": "",
+          "icon": null,
+          "variant": "tonal",
+          "kind": "toolbar",
+          "tabs": [
+            {
+              "icon": "shuffle",
+              "label": ""
+            },
+            {
+              "icon": "repeat",
+              "label": ""
+            },
+            {
+              "icon": "playlist_add",
+              "label": ""
+            },
+            {
+              "icon": "clear_all",
+              "label": ""
+            }
+          ],
+          "note": "reshuffles what is left, cycles repeat, saves the queue as a playlist (createPlaylist) and clears the queue (with an undo snackbar)"
+        }
+      ]
+    },
+    {
+      "id": "g225",
+      "x": 4444,
+      "y": 36,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i226",
+          "label": "",
+          "icon": "keyboard_arrow_down",
+          "variant": "text",
+          "kind": "iconButton",
+          "size": 48,
+          "action": {
+            "to": "back",
+            "transition": "fade"
+          }
+        }
+      ]
+    },
+    {
+      "id": "g227",
+      "x": 4500,
+      "y": 36,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i228",
+          "label": "",
+          "icon": null,
+          "variant": "filled",
+          "kind": "image",
+          "size": 48,
+          "note": "is the small artwork, 10dp corners"
+        }
+      ]
+    },
+    {
+      "id": "g229",
+      "x": 4560,
+      "y": 42,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i230",
+          "label": "Starlight Drive",
+          "icon": null,
+          "variant": "filled",
+          "kind": "text",
+          "size": 16,
+          "bold": true,
+          "note": "has the artist under it in bodyMedium"
+        }
+      ]
+    },
+    {
+      "id": "g231",
+      "x": 4764,
+      "y": 36,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i232",
+          "label": "",
+          "icon": "more_vert",
+          "variant": "text",
+          "kind": "iconButton",
+          "size": 48,
+          "note": "opens the lyrics menu: text size, sync offset in 0.5s steps, provider, and share as an image card"
+        }
+      ]
+    },
+    {
+      "id": "g233",
+      "x": 4452,
+      "y": 170,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i234",
+          "label": "We left with the windows down",
+          "icon": null,
+          "variant": "filled",
+          "kind": "text",
+          "size": 24,
+          "bold": true
+        }
+      ]
+    },
+    {
+      "id": "g235",
+      "x": 4452,
+      "y": 236,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i236",
+          "label": "Counting every headlight",
+          "icon": null,
+          "variant": "filled",
+          "kind": "text",
+          "size": 28,
+          "bold": true,
+          "note": "is the active line"
+        }
+      ]
+    },
+    {
+      "id": "g237",
+      "x": 4452,
+      "y": 306,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i238",
+          "label": "You drummed on the dashboard",
+          "icon": null,
+          "variant": "filled",
+          "kind": "text",
+          "size": 24,
+          "bold": true
+        }
+      ]
+    },
+    {
+      "id": "g239",
+      "x": 4452,
+      "y": 372,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i240",
+          "label": "Humming songs we never knew",
+          "icon": null,
+          "variant": "filled",
+          "kind": "text",
+          "size": 24,
+          "bold": true
+        }
+      ]
+    },
+    {
+      "id": "g241",
+      "x": 4452,
+      "y": 438,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i242",
+          "label": "The night was ours to borrow",
+          "icon": null,
+          "variant": "filled",
+          "kind": "text",
+          "size": 24,
+          "bold": true
+        }
+      ]
+    },
+    {
+      "id": "g243",
+      "x": 4460,
+      "y": 700,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i244",
+          "label": "",
+          "icon": null,
+          "variant": "filled",
+          "kind": "slider",
+          "size": 348,
+          "value": 36
+        }
+      ]
+    },
+    {
+      "id": "g245",
+      "x": 4538,
+      "y": 764,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i246",
+          "label": "",
+          "icon": "skip_previous",
+          "variant": "tonal",
+          "kind": "iconButton",
+          "size": 56
+        }
+      ]
+    },
+    {
+      "id": "g247",
+      "x": 4606,
+      "y": 764,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i248",
+          "label": "",
+          "icon": "pause",
+          "variant": "filled",
+          "kind": "iconButton",
+          "size": 56
+        }
+      ]
+    },
+    {
+      "id": "g249",
+      "x": 4674,
+      "y": 764,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i250",
+          "label": "",
+          "icon": "skip_next",
+          "variant": "tonal",
+          "kind": "iconButton",
+          "size": 56
+        }
+      ]
+    },
+    {
+      "id": "g251",
+      "x": 4920,
+      "y": 0,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i252",
+          "label": "Settings",
+          "icon": "arrow_back",
+          "variant": "filled",
+          "kind": "topAppBar",
+          "actions": {
+            "icon": {
+              "to": "back",
+              "transition": "slide"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "g253",
+      "x": 4936,
+      "y": 104,
+      "axis": "x",
+      "items": [
+        {
+          "id": "i254",
+          "label": "music.example.com",
+          "icon": "dns",
+          "variant": "filled",
+          "kind": "card",
+          "supporting": "Signed in as alex • Navidrome 0.56",
+          "noImage": true,
+          "fill": "primaryContainer",
+          "size2": 88,
+          "note": "shows the user's avatar (getAvatar) in a circle on onPrimaryContainer at 12%, the server host in titleMedium, the user and server version in bodyMedium at 70% and a chevron at the end. It opens the server list to switch servers, add one (the Connect form) or sign out"
+        }
+      ]
+    },
+    {
+      "id": "g255",
+      "x": 4936,
+      "y": 208,
+      "axis": "y",
+      "items": [
+        {
+          "id": "i256",
+          "label": "Appearance",
+          "icon": "palette",
+          "variant": "filled",
+          "kind": "listItem",
+          "supporting": "Theme, colors, player design",
+          "icon2": "chevron_right",
+          "note": "is the first category row: 88dp tall, 22dp by 14dp padding, a 52dp circular icon bubble filled with the row's accent (primary, secondary or tertiary in turn) and the icon in its on-color, the title in titleMedium and the subtitle in bodyMedium on onSurfaceVariant, on surfaceContainerLow. The group has 28dp outer and 6dp inner corners, and rows press-scale to 97%"
+        },
+        {
+          "id": "i257",
+          "label": "Player & audio",
+          "icon": "graphic_eq",
+          "variant": "filled",
+          "kind": "listItem",
+          "supporting": "Quality, ReplayGain, crossfade",
+          "icon2": "chevron_right"
+        },
+        {
+          "id": "i258",
+          "label": "Lyrics",
+          "icon": "lyrics",
+          "variant": "filled",
+          "kind": "listItem",
+          "supporting": "Sources, size, animation",
+          "icon2": "chevron_right"
+        },
+        {
+          "id": "i259",
+          "label": "Storage & downloads",
+          "icon": "download",
+          "variant": "filled",
+          "kind": "listItem",
+          "supporting": "Offline music, cache size",
+          "icon2": "chevron_right"
+        },
+        {
+          "id": "i260",
+          "label": "Scrobbling",
+          "icon": "history",
+          "variant": "filled",
+          "kind": "listItem",
+          "supporting": "Navidrome, Last.fm, ListenBrainz",
+          "icon2": "chevron_right"
+        },
+        {
+          "id": "i261",
+          "label": "Backup & restore",
+          "icon": "settings_backup_restore",
+          "variant": "filled",
+          "kind": "listItem",
+          "supporting": "Settings and servers",
+          "icon2": "chevron_right"
+        },
+        {
+          "id": "i262",
+          "label": "About",
+          "icon": "info",
+          "variant": "filled",
+          "kind": "listItem",
+          "supporting": "Version, licenses",
+          "icon2": "chevron_right"
+        }
+      ]
+    }
+  ]
+}
